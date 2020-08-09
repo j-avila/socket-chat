@@ -17,6 +17,12 @@ io.on('connection', client => {
 		let AllUsers = users.addPerson(client.id, data.name, data.room)
 		const usersRoom = users.getRoomUsers(data.room)
 		client.broadcast.to(data.room).emit('usersList', usersRoom)
+		client.broadcast
+			.to(data.room)
+			.emit(
+				'createMessage',
+				createMessage('admin', ` 🔌  ${data.name} entró a la sala`)
+			)
 		callback(usersRoom)
 		console.log(`🖥 ${data.name} connected `)
 	})
@@ -24,6 +30,7 @@ io.on('connection', client => {
 	client.on('disconnect', () => {
 		const userDeleted = users.removeUser(client ? client.id : { name: 'user' })
 		console.log('fails at this point', userDeleted)
+
 		client.broadcast
 			.to(userDeleted.room)
 			.emit(
@@ -36,10 +43,11 @@ io.on('connection', client => {
 	})
 
 	// create chat messages
-	client.on('createMessage', data => {
+	client.on('createMessage', (data, callback) => {
 		const person = users.getPerson(client.id)
 		const message = createMessage(person.name, data.message)
 		client.broadcast.to(person.room).emit('createMessage', message)
+		callback(message)
 	})
 
 	// private message
