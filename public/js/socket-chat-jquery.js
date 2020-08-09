@@ -7,6 +7,7 @@ var date = new Date()
 var currentTime = date.getHours() + ':' + date.getMinutes() + 'hrs'
 
 // jquery refs
+var title = $('.box-title small')
 var usersDiv = $('#divUsuarios')
 var msgForm = $('#sendForm')
 var msgTxt = $('#txtMessage')
@@ -96,6 +97,11 @@ function scrollBottom() {
 }
 
 // listeners
+
+$(document).ready(function () {
+	title.text(room)
+})
+
 usersDiv.on('click', 'a', function () {
 	var id = $(this).data('id')
 	console.log(id)
