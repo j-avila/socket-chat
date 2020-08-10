@@ -12,6 +12,7 @@ var usersDiv = $('#divUsuarios')
 var msgForm = $('#sendForm')
 var msgTxt = $('#txtMessage')
 var divChatBox = $('#divChatbox')
+var userSearch = $('#user-search')
 
 // render users functions
 
@@ -105,6 +106,14 @@ $(document).ready(function () {
 usersDiv.on('click', 'a', function () {
 	var id = $(this).data('id')
 	console.log(id)
+})
+
+userSearch.on('change', function (e) {
+	e.preventDefault()
+	var name = $(this).val()
+	socket.emit('filteredList', { name, room }, list => {
+		usersRender(list)
+	})
 })
 
 msgForm.on('submit', function (e) {

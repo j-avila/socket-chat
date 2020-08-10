@@ -11,7 +11,7 @@ io.on('connection', client => {
 			return callback({ error: true, message: 'el nombre/sala es requerido' })
 		}
 
-		// this is for put the user into the room
+		// this is to put the user into the room
 		client.join(data.room)
 
 		let AllUsers = users.addPerson(client.id, data.name, data.room)
@@ -40,6 +40,15 @@ io.on('connection', client => {
 		client.broadcast
 			.to(userDeleted.room)
 			.emit('usersList', users.getRoomUsers(userDeleted.room))
+	})
+
+	client.on('filteredList', (data, callback) => {
+		var list = users.getRoomUsers(data.room)
+		let usersFiltered = list.filter(
+			u => u.room === u.room && u.name === data.name
+		)
+		let allUsers = users.getAllUsers()
+		callback(data.name !== '' ? usersFiltered : allUsers)
 	})
 
 	// create chat messages
